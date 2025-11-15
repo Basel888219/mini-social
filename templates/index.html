@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DaVita Mini Social</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app">
+    <!-- Top bar -->
+    <header class="top-bar">
+        <div class="logo">
+            <span class="dot"></span>
+            <span class="brand-main">DaVita</span>
+            <span class="brand-sub">Mini Social</span>
+        </div>
+        <div class="user-info">
+            <span class="user-label">Current user:</span>
+            <span class="user-name">{{ current_user }}</span>
+        </div>
+    </header>
+
+    <!-- Story strip (fake avatars) -->
+    <section class="stories">
+        <div class="story-card me">
+            <div class="avatar">{{ current_user[0]|upper }}</div>
+            <div class="name">You</div>
+        </div>
+        <div class="story-card">
+            <div class="avatar">M</div>
+            <div class="name">Mariam</div>
+        </div>
+        <div class="story-card">
+            <div class="avatar">Z</div>
+            <div class="name">Zeeshan</div>
+        </div>
+        <div class="story-card">
+            <div class="avatar">I</div>
+            <div class="name">Dr. Ibrahim</div>
+        </div>
+        <div class="story-card">
+            <div class="avatar">F</div>
+            <div class="name">Faisal</div>
+        </div>
+    </section>
+
+    <!-- Composer -->
+    <section class="composer">
+        <form method="post" action="{{ url_for('add_post') }}">
+            <div class="composer-header">
+                <input type="text" name="user" value="{{ current_user }}"
+                       placeholder="Your name (e.g. Basel, Mariam)" required>
+                <input type="url" name="image_url"
+                       placeholder="Optional image URL (e.g. https://...)">
+            </div>
+            <textarea name="content"
+                      placeholder="Share an update with the team…"
+                      required></textarea>
+            <div class="composer-footer">
+                <div class="hint">
+                    Share this link with your team and change <code>?user=Name</code> in the URL.
+                </div>
+                <button type="submit">Post</button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Feed -->
+    <section class="feed">
+        {% if posts %}
+            {% for p in posts %}
+                <article class="post">
+                    <header class="post-header">
+                        <div class="post-author">
+                            <div class="avatar">{{ p.user[0]|upper }}</div>
+                            <div class="meta">
+                                <div class="name">{{ p.user }}</div>
+                                <div class="time">{{ p.time }}</div>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="post-body">
+                        <p class="text">{{ p.content }}</p>
+                        {% if p.image_url %}
+                            <div class="image-wrap">
+                                <img src="{{ p.image_url }}" alt="post image">
+                            </div>
+                        {% endif %}
+                    </div>
+                    <footer class="post-footer">
+                        <button class="icon-btn">👍 Like</button>
+                        <button class="icon-btn">💬 Comment</button>
+                    </footer>
+                </article>
+            {% endfor %}
+        {% else %}
+            <div class="empty">
+                No posts yet. Be the first to share something ✨
+            </div>
+        {% endif %}
+    </section>
+
+    <footer class="bottom-hint">
+        Change user by adding <code>?user=Basel</code> or <code>?user=Mariam</code> to the URL.
+    </footer>
+</div>
+</body>
+</html>
